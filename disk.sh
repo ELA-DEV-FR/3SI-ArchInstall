@@ -65,6 +65,7 @@ echo -e "${CYAN} Montage des partitions...${RESET}"
 mount /dev/mapper/luks_rest /mnt
 mkdir -p /mnt/boot /mnt/share /mnt/vm
 mount ${DISK}1 /mnt/boot
+mkdir -R /mnt/boot/efi
 mount ${DISK}2 /mnt/vm
 mount ${DISK}3 /mnt/share
 
