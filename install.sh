@@ -32,12 +32,12 @@ mkfs.fat -F32 /dev/sda1
 # BUILD DISK #
 ##############
 bash disk.sh
-pacstrap /mnt base linux linux-firmware
+pacstrap /mnt/vm base linux linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
 ######################
 # CHROOT ENVIRONMENT #
 ######################
-arch-chroot /mnt <<EOF
+arch-chroot /mnt/vm <<EOF
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
