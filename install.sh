@@ -42,7 +42,6 @@ genfstab -U /mnt >> /mnt/etc/fstab
 # CHROOT ENVIRONMENT #
 ######################
 arch-chroot /mnt <<EOF
-# Chrooted commands go here
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
@@ -51,7 +50,7 @@ echo "archlinux" > /etc/hostname
 # GRUB Installation for UEFI #
 ##############################
 
-mount /dev/sda1 /boot/efi  # Replace /dev/sda1 with your actual EFI partition
+mount /dev/sda /boot/efi
 pacman -S grub os-prober --noconfirm
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
