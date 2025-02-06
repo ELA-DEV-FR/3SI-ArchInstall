@@ -38,20 +38,22 @@ bash disk.sh
 pacstrap /mnt base linux linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
 
-##############
+######################
 # CHROOT ENVIRONMENT #
-##############
+######################
 arch-chroot /mnt <<EOF
 # Chrooted commands go here
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-########
-# GRUB #
-########
-pacman -S grub os-prober
-grub-install --target=i386-pc /dev/sda
+##############################
+# GRUB Installation for UEFI #
+##############################
+
+mount /dev/sda1 /boot/efi  # Replace /dev/sda1 with your actual EFI partition
+pacman -S grub os-prober --noconfirm
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 
 ############
@@ -65,12 +67,11 @@ echo "fiston:azerty123" | chpasswd
 ########
 # SUDO #
 ########
-pacman -S sudo
+pacman -S sudo --noconfirm
 echo "papa ALL=(ALL) ALL" | tee -a /etc/sudoers
 
 # Optional: Install Hyprland and dependencies inside chroot
 # pacman -S yay ninja gcc cmake meson libxcb ...
-
 EOF
 
 ##########
