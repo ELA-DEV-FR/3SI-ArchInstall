@@ -12,22 +12,22 @@ echo -e "${CYAN}-----------------------------------------------${RESET}"
 
 # Variables
 DISK="/dev/sda"
-EFI_SIZE="512M"
-VM_SIZE="20G"
-SHARE_SIZE="5G"
-LUKS_OPTIONAL_SIZE="10G"
+EFI_SIZE=512
+VM_SIZE=$((20 * 1024))
+SHARE_SIZE=$((5 * 1024))
+LUKS_OPTIONAL_SIZE="$((10 * 1024))
 
 ###################
 # PARTITIONNEMENT # 
 ###################
 echo -e "${CYAN} Création des partitions...${RESET}"
 parted -s $DISK mklabel gpt
-parted -s $DISK mkpart ESP fat32 1MiB $EFI_SIZE
+parted -s $DISK mkpart ESP fat32 1MiB ${EFI_SIZE}MiB
 parted -s $DISK set 1 esp on
-parted -s $DISK mkpart VM ext4 $EFI_SIZE $((EFI_SIZE + VM_SIZE))
-parted -s $DISK mkpart SHARE ext4 $((EFI_SIZE + VM_SIZE)) $((EFI_SIZE + VM_SIZE + SHARE_SIZE))
-parted -s $DISK mkpart OPTIONAL_LUKS ext4 $((EFI_SIZE + VM_SIZE + SHARE_SIZE)) $((EFI_SIZE + VM_SIZE + SHARE_SIZE + LUKS_OPTIONAL_SIZE))
-parted -s $DISK mkpart LUKS_REST ext4 $((EFI_SIZE + VM_SIZE + SHARE_SIZE + LUKS_OPTIONAL_SIZE)) 100%
+parted -s $DISK mkpart VM ext4 ${EFI_SIZE}MiB $((EFI_SIZE + VM_SIZE))MiB
+parted -s $DISK mkpart SHARE ext4 $((EFI_SIZE + VM_SIZE))MiB $((EFI_SIZE + VM_SIZE + SHARE_SIZE))MiB
+parted -s $DISK mkpart OPTIONAL_LUKS ext4 $((EFI_SIZE + VM_SIZE + SHARE_SIZE))MiB $((EFI_SIZE + VM_SIZE + SHARE_SIZE + LUKS_OPTIONAL_SIZE))MiB
+parted -s $DISK mkpart LUKS_REST ext4 $((EFI_SIZE + VM_SIZE + SHARE_SIZE + LUKS_OPTIONAL_SIZE))MiB 100%
 sleep 2
 
 ##################
