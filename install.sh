@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Définition des couleurs
+###########
+# CREDITS #
+###########
 RED="\e[31m"
 GREEN="\e[32m"
 YELLOW="\e[33m"
@@ -10,8 +12,6 @@ WHITE="\e[97m"
 BOLD="\e[1m"
 RESET="\e[0m"
 
-
-# CREDITS
 echo -e "${CYAN}-----------------------------------------------${RESET}"
 echo -e "${BOLD}${GREEN}                Arch AUTO install                 ${RESET}"
 echo -e "${CYAN}-----------------------------------------------${RESET}"
@@ -20,7 +20,11 @@ echo -e "${GREEN} • L.Emeric 3SI                                ${RESET}"
 echo -e "${GREEN} • M.Julien 3SI                                ${RESET}"
 echo -e "${CYAN}-----------------------------------------------${RESET}"
 
+############
+# KEYBOARD #
+############
 loadkeys fr
+
 mkfs.fat -F32 /dev/sda1
 pacman -Syy
 pacman -S reflector -y 
@@ -78,10 +82,17 @@ mkfs.ext4 "/home"
 
 
 mount /dev/sda6 /mnt
-pacman -S sudo -y 
-pacman -S hyprland -y 
-pacman -S yay -y 
+
+############
+# HYPRLAND #
+############
+# DEPENDANCES :
 yay -S ninja gcc cmake meson libxcb xcb-proto xcb-util xcb-util-keysyms libxfixes libx11 libxcomposite libxrender pixman wayland-protocols cairo pango libxkbcommon xcb-util-wm xorg-xwayland libinput libliftoff libdisplay-info cpio tomlplusplus hyprlang-git hyprcursor-git hyprwayland-scanner-git xcb-util-errors hyprutils-git glaze hyprgraphics-git
-# création des users de fin 
+pacman -S --noconfirm sudo hyprland
+pacman -S yay -y 
+
+#########
+# USERS #
+#########
 echo "père:azerty123" | chpasswd
 useradd -m "fiston:azerty123" | chpasswd 
