@@ -69,7 +69,6 @@ echo "fiston:azerty123" | chpasswd
 pacman -S sudo --noconfirm
 echo "papa ALL=(ALL) ALL" | tee -a /etc/sudoers
 
-# Optional: Install Hyprland and dependencies inside chroot
 # pacman -S yay ninja gcc cmake meson libxcb ...
 EOF
 
@@ -77,5 +76,5 @@ EOF
 # ENDING #
 ##########
 echo -e "${GREEN}Installation terminée avec succès ! Redémarrage en cours...${RESET}"
-umount -R /mnt
-reboot
+#umount -R /mnt
+#reboot
