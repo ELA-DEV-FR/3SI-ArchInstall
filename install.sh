@@ -19,25 +19,21 @@ echo -e "${BOLD}${WHITE}                   Made By                     ${RESET}"
 echo -e "${GREEN} • L.Emeric 3SI                                ${RESET}"
 echo -e "${GREEN} • M.Julien 3SI                                ${RESET}"
 echo -e "${CYAN}-----------------------------------------------${RESET}"
-
 ############
 # KEYBOARD #
 ############
 loadkeys fr
-
-mkfs.fat -F32 /dev/sda1
 pacman -Syy
-pacman -S reflector -y 
-reflector -c "US" -f 12 -l 10 -n 12 --save /etc/pacman.d/mirrorlist
-pacman -S cryptsetup -y 
-
+pacman -S reflector --noconfirm
+reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+pacman -S cryptsetup --noconfirm 
+mkfs.fat -F32 /dev/sda1
 ##############
 # BUILD DISK #
 ##############
 bash disk.sh
 pacstrap /mnt base linux linux-firmware
 genfstab -U /mnt >> /mnt/etc/fstab
-
 ######################
 # CHROOT ENVIRONMENT #
 ######################
@@ -45,13 +41,13 @@ arch-chroot /mnt <<EOF
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
-
 ##############################
 # GRUB Installation for UEFI #
 ##############################
 
-mount /dev/sda /boot/
 mkdir /boot/efi
+mount /dev/sda1 /boot/efi
+systemctl daemon-reload
 pacman -S grub os-prober efibootmgr --noconfirm
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -77,5 +73,5 @@ EOF
 # ENDING #
 ##########
 echo -e "${GREEN}Installation terminée avec succès ! Redémarrage en cours...${RESET}"
-#umount -R /mnt
-#reboot
+umount -R /mnt
+reboot
