@@ -33,7 +33,7 @@ mkfs.fat -F32 /dev/sda1
 ##############
 bash disk.sh
 pacstrap /mnt/vm base linux linux-firmware
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt/vm >> /mnt/vm/etc/fstab
 ######################
 # CHROOT ENVIRONMENT #
 ######################
@@ -73,5 +73,5 @@ EOF
 # ENDING #
 ##########
 echo -e "${GREEN}Installation terminée avec succès ! Redémarrage en cours...${RESET}"
-umount -R /mnt
+umount -R /mnt/vm
 reboot
