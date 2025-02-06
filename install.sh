@@ -69,7 +69,7 @@ echo "papa ALL=(ALL) ALL" | tee -a /etc/sudoers
 #pacman -S ninja gcc cmake meson libxcb xcb-proto xcb-util xcb-util-keysyms libxfixes libx11 libxcomposite libxrender pixman wayland-protocols cairo pango libxkbcommon xcb-util-wm xorg-xwayland libinput libliftoff libdisplay-info cpio tomlplusplus
 #yay -S hyprlang-git hyprcursor-git hyprwayland-scanner-git xcb-util-errors hyprutils-git glaze hyprgraphics-git
 
-pacman -Sy hyprland
+#pacman -Sy hyprland
 EOF
 
 ##########
