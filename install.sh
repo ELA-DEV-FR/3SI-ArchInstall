@@ -48,7 +48,7 @@ echo "archlinux" > /etc/hostname
 mkdir /boot/efi
 mount /dev/sda1 /boot/efi
 systemctl daemon-reload
-pacman -S grub os-prober efibootmgr --noconfirm
+pacman -Sy grub os-prober efibootmgr 
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 
@@ -63,10 +63,13 @@ echo "fiston:azerty123" | chpasswd
 ########
 # SUDO #
 ########
-pacman -S sudo --noconfirm
+pacman -Sy sudo 
 echo "papa ALL=(ALL) ALL" | tee -a /etc/sudoers
 
-# pacman -S yay ninja gcc cmake meson libxcb ...
+#pacman -S ninja gcc cmake meson libxcb xcb-proto xcb-util xcb-util-keysyms libxfixes libx11 libxcomposite libxrender pixman wayland-protocols cairo pango libxkbcommon xcb-util-wm xorg-xwayland libinput libliftoff libdisplay-info cpio tomlplusplus
+#yay -S hyprlang-git hyprcursor-git hyprwayland-scanner-git xcb-util-errors hyprutils-git glaze hyprgraphics-git
+
+pacman -Sy hyprland
 EOF
 
 ##########
