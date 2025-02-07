@@ -55,7 +55,6 @@ echo "archlinux" > /etc/hostname
 
 pacman -Sy grub os-prober efibootmgr
 
-mkdir -p /boot/efi
 mount /dev/sda1 /boot/efi
 systemctl daemon-reload
 
