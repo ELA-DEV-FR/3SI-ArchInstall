@@ -59,7 +59,7 @@ echo "luks_rest UUID=$(blkid -s UUID -o value ${DISK}5) none luks" >> /etc/crypt
 # GRUB Installation for UEFI #
 ##############################
 
-mkdir /boot/efi
+mkdir -p /boot/efi
 mount /dev/sda1 /boot/efi
 systemctl daemon-reload
 pacman -Sy grub os-prober efibootmgr 

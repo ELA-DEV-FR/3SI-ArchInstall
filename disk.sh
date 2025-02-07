@@ -42,35 +42,42 @@ mkfs.ext4 ${DISK}3
 # CHIFFREMENT # 
 ###############
 echo -e "${CYAN} Mise en place du chiffrement LUKS...${RESET}"
+# Chiffrement de la partition share
 echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}4
+# Chiffrement de la partition système
 echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}5
 
 #################
 # DECHIFFREMENT # 
 #################
 echo -e "${CYAN} Déverrouillage des volumes chiffrés...${RESET}"
-echo -n "azerty123" | cryptsetup open ${DISK}4 optional_luks
-pvcreate /dev/mapper/optional_luks
-vgcreate secure /dev/mapper/optional_luks
-lvcreate -l 100%FREE secure -n system
+# Share
+echo -n "azerty123" | cryptsetup open ${DISK}4 share_crypt
+mkfs.ext4 /dev/mapper/share_crypt
 
-mkfs.ext4 /dev/secure/system
-mkfs.ext4 /dev/mapper/luks_rest
-
-echo -n "azerty123" | cryptsetup open ${DISK}5 luks_rest
+# Système
+echo -n "azerty123" | cryptsetup open ${DISK}5 system_crypt
+pvcreate /dev/mapper/system_crypt
+vgcreate system /dev/mapper/system_crypt
+lvcreate -L 20G system -n root
+lvcreate -l 100%FREE system -n home
 
 ##################
 # FORMATAGE + FS #
 ##################
-mount /dev/secure/system /mnt
-mkdir -p /mnt/home
-mount /dev/mapper/luks_rest /mnt/home
-mkfs.ext4 /dev/mapper/luks_rest
+mkfs.ext4 /dev/system/root
+mkfs.ext4 /dev/system/home
 
 ###########
 # MONTAGE #
 ###########
 echo -e "${CYAN} Montage des partitions...${RESET}"
-mount /dev/mapper/optionnal_luks /mnt
-mount -o subvol=@home /dev/mapper/optionnal_luks /mnt/home
+mount /dev/system/root /mnt
+mkdir -p /mnt/boot/efi
+mkdir -p /mnt/home
+mkdir -p /mnt/share
+mount ${DISK}1 /mnt/boot/efi
+mount /dev/system/home /mnt/home
+mount /dev/mapper/share_crypt /mnt/share
+
 echo -e "${GREEN} Partitionnement terminé !${RESET}"
