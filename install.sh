@@ -48,12 +48,13 @@ genfstab -U /mnt >> /mnt/etc/fstab
 # CHROOT ENVIRONMENT #
 ######################
 
-arch-chroot /mnt <<EOF
+cat <<EOF > /mnt/root/chroot_script.sh
+#!/bin/bash
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-pacman -Sy grub os-prober efibootmgr
+pacman -Sy grub os-prober efibootmgr --noconfirm
 
 mount /dev/sda1 /boot/efi
 systemctl daemon-reload
@@ -77,9 +78,8 @@ useradd -m -s /bin/bash fiston
 echo "fiston:azerty123" | chpasswd
 
 # Ajout de sudo
-pacman -Sy sudo 
+pacman -Sy sudo --noconfirm
 echo "papa ALL=(ALL) ALL" | tee -a /etc/sudoers
-
 EOF
 
 
