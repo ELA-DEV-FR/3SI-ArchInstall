@@ -31,9 +31,9 @@ echo -e "${CYAN}-----------------------------------------------${RESET}"
 ############
 loadkeys fr
 pacman -Syy
-pacman -S reflector --noconfirm
+pacman -Sy reflector --noconfirm
 reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-pacman -S cryptsetup --noconfirm 
+pacman -Sy cryptsetup  --noconfirm 
 
 ##############
 # BUILD DISK #
@@ -41,7 +41,7 @@ pacman -S cryptsetup --noconfirm
 bash disk.sh
 mkdir -p /mnt/boot/efi
 mount /dev/sda1 /mnt/boot/efi
-pacstrap /mnt base linux linux-firmware
+pacstrap /mnt base linux linux-firmware lvm2
 genfstab -U /mnt >> /mnt/etc/fstab
 
 ######################
@@ -51,7 +51,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 cp chroot.sh /mnt/root/chroot.sh
 chmod +x /mnt/root/chroot.sh
 arch-chroot /mnt /root/chroot.sh
-
+genfstab -U /mnt >> /mnt/etc/fstab
 
 ##########
 # ENDING #
