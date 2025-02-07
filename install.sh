@@ -28,7 +28,6 @@ pacman -Syy
 pacman -S reflector --noconfirm
 reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 pacman -S cryptsetup --noconfirm 
-mkfs.fat -F32 /dev/sda1
 
 ##############
 # BUILD DISK #
@@ -40,6 +39,9 @@ genfstab -U /mnt >> /mnt/etc/fstab
 ######################
 # CHROOT ENVIRONMENT #
 ######################
+mkdir -p /mnt/boot/efi
+mount /dev/sda1 /mnt/boot/efi
+
 arch-chroot /mnt <<EOF
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
@@ -53,6 +55,7 @@ mkdir /boot/efi
 mount /dev/sda1 /boot/efi
 systemctl daemon-reload
 pacman -Sy grub os-prober efibootmgr 
+mkdir -p /boot/efi/EFI/GRUB
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 
