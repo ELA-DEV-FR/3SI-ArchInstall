@@ -62,10 +62,9 @@ mkfs.ext4 /dev/mapper/luks_rest
 # MONTAGE #
 ###########
 echo -e "${CYAN} Montage des partitions...${RESET}"
-mount /dev/mapper/luks_rest /mnt
-mkdir -p /mnt/boot/efi /mnt/share /mnt/vm
+mkdir -p /mnt/arch /mnt/boot/efi /mnt/share /mnt/vm
+mount /dev/mapper/luks_rest /mnt/arch
 mount ${DISK}1 /mnt/boot
-mkdir -R /mnt/boot/efi
 mount ${DISK}2 /mnt/vm
 mount ${DISK}3 /mnt/share
 
