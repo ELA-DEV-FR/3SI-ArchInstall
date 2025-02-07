@@ -50,18 +50,27 @@ echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}5
 #################
 echo -e "${CYAN} Déverrouillage des volumes chiffrés...${RESET}"
 echo -n "azerty123" | cryptsetup open ${DISK}4 optional_luks
+pvcreate /dev/mapper/optional_luks
+vgcreate secure /dev/mapper/optional_luks
+lvcreate -l 100%FREE secure -n system
+
+mkfs.ext4 /dev/secure/system
+mkfs.ext4 /dev/mapper/luks_rest
+
 echo -n "azerty123" | cryptsetup open ${DISK}5 luks_rest
 
 ##################
 # FORMATAGE + FS #
 ##################
-mkfs.ext4 /dev/mapper/optional_luks
+mount /dev/secure/system /mnt
+mkdir -p /mnt/home
+mount /dev/mapper/luks_rest /mnt/home
 mkfs.ext4 /dev/mapper/luks_rest
 
 ###########
 # MONTAGE #
 ###########
 echo -e "${CYAN} Montage des partitions...${RESET}"
-mount /dev/mapper/luks_rest /mnt
-
+mount /dev/mapper/optionnal_luks /mnt
+mount -o subvol=@home /dev/mapper/optionnal_luks /mnt/home
 echo -e "${GREEN} Partitionnement terminé !${RESET}"
