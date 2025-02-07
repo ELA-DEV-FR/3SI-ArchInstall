@@ -62,10 +62,6 @@ mkfs.ext4 /dev/mapper/luks_rest
 # MONTAGE #
 ###########
 echo -e "${CYAN} Montage des partitions...${RESET}"
-mkdir -p /mnt/arch /mnt/boot/efi /mnt/share /mnt/vm
-mount /dev/mapper/luks_rest /mnt/arch
-mount ${DISK}1 /mnt/boot
-mount ${DISK}2 /mnt/vm
-mount ${DISK}3 /mnt/share
+mount /dev/mapper/luks_rest /mnt
 
 echo -e "${GREEN} Partitionnement terminé !${RESET}"
