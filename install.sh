@@ -53,45 +53,40 @@ ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-echo "optional_luks UUID=$(blkid -s UUID -o value ${DISK}4) none luks" >> /etc/crypttab
-echo "luks_rest UUID=$(blkid -s UUID -o value ${DISK}5) none luks" >> /etc/crypttab
-
-##############################
-# GRUB Installation for UEFI #
-##############################
+pacman -Sy grub os-prober efibootmgr
 
 mkdir -p /boot/efi
 mount /dev/sda1 /boot/efi
 systemctl daemon-reload
-pacman -Sy grub os-prober efibootmgr 
-mkdir -p /boot/efi/EFI/GRUB
+
+echo "GRUB_ENABLE_CRYPTODISK=y" > /etc/default/grub
+echo "optional_luks UUID=$(blkid -s UUID -o value ${DISK}4) none luks" >> /etc/crypttab
+echo "luks_rest UUID=$(blkid -s UUID -o value ${DISK}5) none luks" >> /etc/crypttab
+
+# Générer l'initramfs avec le support LUKS
+sed -i 's|^HOOKS=.*|HOOKS=(base udev autodetect modconf block encrypt lvm2 filesystems keyboard fsck)|' /etc/mkinitcpio.conf
+mkinitcpio -P
+
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
-sed -i 's/^GRUB_CMDLINE_LINUX=".*"/GRUB_CMDLINE_LINUX="cryptdevice=UUID=$(blkid -s UUID -o value ${DISK}5):luks_rest root=/dev/system/root"/' /etc/default/grub
+sed -i 's|^GRUB_CMDLINE_LINUX=".*"|GRUB_CMDLINE_LINUX="cryptdevice=UUID=$(blkid -s UUID -o value ${DISK}5):luks_rest root=/dev/system/root initrd=/boot/initramfs-linux.img"|' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
-############
-# USERS #
-############
+# Création des utilisateurs
 useradd -m -s /bin/bash papa
 echo "papa:azerty123" | chpasswd
 useradd -m -s /bin/bash fiston
 echo "fiston:azerty123" | chpasswd
 
-########
-# SUDO #
-########
+# Ajout de sudo
 pacman -Sy sudo 
 echo "papa ALL=(ALL) ALL" | tee -a /etc/sudoers
 
-#pacman -S ninja gcc cmake meson libxcb xcb-proto xcb-util xcb-util-keysyms libxfixes libx11 libxcomposite libxrender pixman wayland-protocols cairo pango libxkbcommon xcb-util-wm xorg-xwayland libinput libliftoff libdisplay-info cpio tomlplusplus
-#yay -S hyprlang-git hyprcursor-git hyprwayland-scanner-git xcb-util-errors hyprutils-git glaze hyprgraphics-git
-
-#pacman -Sy hyprland
 EOF
+
 
 ##########
 # ENDING #
 ##########
 echo -e "${GREEN}Installation terminée avec succès ! Redémarrage en cours...${RESET}"
-umount -R /mnt
-reboot
+#umount -R /mnt
+#reboot
