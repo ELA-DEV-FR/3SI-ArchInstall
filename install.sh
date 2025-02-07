@@ -55,6 +55,7 @@ echo "archlinux" > /etc/hostname
 
 echo "optional_luks UUID=$(blkid -s UUID -o value ${DISK}4) none luks" >> /etc/crypttab
 echo "luks_rest UUID=$(blkid -s UUID -o value ${DISK}5) none luks" >> /etc/crypttab
+
 ##############################
 # GRUB Installation for UEFI #
 ##############################
@@ -65,6 +66,7 @@ systemctl daemon-reload
 pacman -Sy grub os-prober efibootmgr 
 mkdir -p /boot/efi/EFI/GRUB
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
+sed -i 's/^GRUB_CMDLINE_LINUX=".*"/GRUB_CMDLINE_LINUX="cryptdevice=UUID=$(blkid -s UUID -o value ${DISK}5):luks_rest root=/dev/system/root"/' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
 ############
