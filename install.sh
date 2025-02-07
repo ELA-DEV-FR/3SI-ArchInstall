@@ -19,6 +19,7 @@ echo -e "${BOLD}${WHITE}                   Made By                     ${RESET}"
 echo -e "${GREEN} • L.Emeric 3SI                                ${RESET}"
 echo -e "${GREEN} • M.Julien 3SI                                ${RESET}"
 echo -e "${CYAN}-----------------------------------------------${RESET}"
+
 ############
 # KEYBOARD #
 ############
@@ -28,19 +29,22 @@ pacman -S reflector --noconfirm
 reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 pacman -S cryptsetup --noconfirm 
 mkfs.fat -F32 /dev/sda1
+
 ##############
 # BUILD DISK #
 ##############
 bash disk.sh
-pacstrap /mnt/arch base linux linux-firmware
-genfstab -U /mnt/arch >> /mnt/arch/etc/fstab
+pacstrap /mnt base linux linux-firmware
+genfstab -U /mnt >> /mnt/etc/fstab
+
 ######################
 # CHROOT ENVIRONMENT #
 ######################
-arch-chroot /mnt/arch <<EOF
+arch-chroot /mnt <<EOF
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
+
 ##############################
 # GRUB Installation for UEFI #
 ##############################
