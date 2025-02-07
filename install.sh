@@ -32,12 +32,12 @@ mkfs.fat -F32 /dev/sda1
 # BUILD DISK #
 ##############
 bash disk.sh
-pacstrap /mnt/vm base linux linux-firmware
-genfstab -U /mnt/vm >> /mnt/vm/etc/fstab
+pacstrap /mnt/arch base linux linux-firmware
+genfstab -U /mnt/arch >> /mnt/arch/etc/fstab
 ######################
 # CHROOT ENVIRONMENT #
 ######################
-arch-chroot /mnt/vm <<EOF
+arch-chroot /mnt/arch <<EOF
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
@@ -76,5 +76,5 @@ EOF
 # ENDING #
 ##########
 echo -e "${GREEN}Installation terminée avec succès ! Redémarrage en cours...${RESET}"
-umount -R /mnt/vm
+umount -R /mnt
 reboot
