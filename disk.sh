@@ -42,9 +42,7 @@ mkfs.ext4 ${DISK}3
 # CHIFFREMENT # 
 ###############
 echo -e "${CYAN} Mise en place du chiffrement LUKS...${RESET}"
-# Chiffrement de la partition share
 echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}4
-# Chiffrement de la partition système
 echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}5
 
 #################
