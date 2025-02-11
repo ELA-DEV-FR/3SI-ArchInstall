@@ -52,6 +52,7 @@ cp chroot.sh /mnt/root/chroot.sh
 chmod +x /mnt/root/chroot.sh
 arch-chroot /mnt /root/chroot.sh
 genfstab -U /mnt >> /mnt/etc/fstab
+mkinitcpio -P
 
 ##########
 # ENDING #
