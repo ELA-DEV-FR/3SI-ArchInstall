@@ -38,7 +38,8 @@ pacman -Sy cryptsetup  --noconfirm
 ##############
 # BUILD DISK #
 ##############
-bash disk.sh
+#bash disk.sh
+bash disk2.sh 
 mkdir -p /mnt/boot/efi
 mount /dev/sda1 /mnt/boot/efi
 pacstrap /mnt base linux linux-firmware lvm2
@@ -48,9 +49,12 @@ genfstab -U /mnt >> /mnt/etc/fstab
 # CHROOT ENVIRONMENT #
 ######################
 
-cp chroot.sh /mnt/root/chroot.sh
-chmod +x /mnt/root/chroot.sh
-arch-chroot /mnt /root/chroot.sh
+#cp chroot.sh /mnt/root/chroot.sh
+#chmod +x /mnt/root/chroot.sh
+#arch-chroot /mnt /root/chroot.sh
+cp chroot2.sh /mnt/root/chroot.sh
+chmod +x /mnt/root/chroot2.sh
+arch-chroot /mnt /root/chroot2.sh
 genfstab -U /mnt >> /mnt/etc/fstab
 mkinitcpio -P
 
