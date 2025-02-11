@@ -62,7 +62,9 @@ pvcreate /dev/mapper/system_crypt
 vgcreate system /dev/mapper/system_crypt
 lvcreate -L 20G system -n root
 lvcreate -l 100%FREE system -n home
-
+modprobe dm_mod
+vgscan
+vgchange -ay
 ##################
 # FORMATAGE + FS #
 ##################
