@@ -51,12 +51,12 @@ mkfs.ext4 /dev/mapper/share_crypt
 # MONTAGE #
 ###########
 echo -e "${CYAN} Montage des partitions...${RESET}"
-mount ${DISK}2 /mnt
+mount ${DISK}5 /mnt
 mkdir -p /mnt/boot/efi
 mkdir -p /mnt/share
 mkdir -p /mnt/data
 mount ${DISK}1 /mnt/boot/efi
 mount /dev/mapper/share_crypt /mnt/share
-mount ${DISK}5 /mnt/data
+mount ${DISK}2 /mnt/vm
 
 echo -e "${GREEN} Partitionnement terminé !${RESET}"
