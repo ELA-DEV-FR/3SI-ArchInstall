@@ -41,7 +41,7 @@ pacman -S cryptsetup --noconfirm
 bash disk2.sh
 mkdir -p /mnt/boot/efi
 mount ${DISK}1 /mnt/boot/efi
-pacstrap /mnt base linux linux-firmware lvm2
+pacstrap /mnt base linux linux-firmware lvm2 nano networkmanager
 genfstab -U /mnt >> /mnt/etc/fstab
 
 ######################
