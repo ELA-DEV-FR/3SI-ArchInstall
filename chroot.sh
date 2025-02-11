@@ -1,4 +1,13 @@
 #!/bin/bash
+
+DISK="/dev/sda"
+EFI_SIZE=512
+VM_SIZE=$((20 * 1024))
+SHARE_SIZE=$((5 * 1024))
+LUKS_OPTIONAL_SIZE=$((10 * 1024))
+
+
+
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
