@@ -51,10 +51,13 @@ echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}5
 echo -e "${CYAN} Déverrouillage des volumes chiffrés...${RESET}"
 # Share
 echo -n "azerty123" | cryptsetup open ${DISK}4 share_crypt
+mkfs.ext4 ${DISK}4
+mkfs.ext4 ${DISK}
 mkfs.ext4 /dev/mapper/share_crypt
 
 # Système
 echo -n "azerty123" | cryptsetup open ${DISK}5 system_crypt
+mkfs.ext4 ${DISK}5
 pvcreate /dev/mapper/system_crypt
 vgcreate system /dev/mapper/system_crypt
 lvcreate -L 20G system -n root
