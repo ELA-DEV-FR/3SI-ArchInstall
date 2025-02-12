@@ -29,5 +29,3 @@ usermod -aG share_users fiston
 
 systemctl enable NetworkManager
 loadkeys fr 
-chown root:share_users /mnt/share
-chmod 770 /mnt/share
