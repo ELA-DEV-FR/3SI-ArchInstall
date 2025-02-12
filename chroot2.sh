@@ -7,7 +7,7 @@ ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-pacman -S grub os-prober efibootmgr nano sudo networkmanager gcc firefox-esr  virtualbox virtualbox-host-dkms --noconfirm
+pacman -S grub os-prober efibootmgr nano sudo networkmanager gcc firefox-esr  --noconfirm
 mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
 
