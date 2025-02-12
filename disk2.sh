@@ -13,7 +13,7 @@ echo -e "${CYAN}-----------------------------------------------${RESET}"
 # Variables
 DISK="/dev/sda"
 EFI_SIZE=512
-LVM_SIZE=$((50 * 1024))  # Taille de la partition LVM
+LVM_SIZE=$((60 * 1024))  
 
 ###################
 # PARTITIONNEMENT #
@@ -32,30 +32,32 @@ echo -e "${CYAN} Formatage des partitions...${RESET}"
 mkfs.fat -F32 ${DISK}1
 
 ###############
-# CONFIG LVM #
-###############
-echo -e "${CYAN} Configuration de LVM...${RESET}"
-pvcreate ${DISK}2
-vgcreate vg0 ${DISK}2
-lvcreate -L 20G -n root vg0
-lvcreate -L 10G -n home vg0
-lvcreate -L 10G -n var vg0
-lvcreate -L 10G -n vm vg0 
-lvcreate -L 5G -n share vg0 
-
-###############
 # CHIFFREMENT #
 ###############
-echo -e "${CYAN} Mise en place du chiffrement LUKS pour les volumes logiques...${RESET}"
+echo -e "${CYAN} Mise en place du chiffrement LUKS pour le volume physique...${RESET}"
 echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}2
 echo -n "azerty123" | cryptsetup open ${DISK}2 lvm_crypt
 
+###############
+# CONFIG LVM #
+###############
+echo -e "${CYAN} Configuration de LVM...${RESET}"
+pvcreate /dev/mapper/lvm_crypt
+vgcreate vg0 /dev/mapper/lvm_crypt
+lvcreate -L 20G -n root vg0
+lvcreate -L 10G -n home vg0
+lvcreate -L 10G -n var vg0
+lvcreate -L 10G -n vm vg0
+lvcreate -L 5G -n share vg0
+
+###########
+# FORMATAGE #
+###########
 mkfs.ext4 /dev/vg0/root
 mkfs.ext4 /dev/vg0/home
 mkfs.ext4 /dev/vg0/var
 mkfs.ext4 /dev/vg0/vm
 mkfs.ext4 /dev/vg0/share
-
 
 ###########
 # MONTAGE #
@@ -66,6 +68,7 @@ mkdir -p /mnt/boot/efi
 mkdir -p /mnt/home
 mkdir -p /mnt/var
 mkdir -p /mnt/vm
+mkdir -p /mnt/share
 mount ${DISK}1 /mnt/boot/efi
 mount /dev/vg0/home /mnt/home
 mount /dev/vg0/var /mnt/var
