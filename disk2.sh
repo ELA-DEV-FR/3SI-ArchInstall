@@ -56,5 +56,6 @@ mkdir -p /mnt/boot/efi
 mkdir -p /mnt/share
 mkdir -p /mnt/data
 mount ${DISK}1 /mnt/boot/efi
+mount /dev/mapper/share_crypt /mnt/share
 
 echo -e "${GREEN} Partitionnement terminé !${RESET}"

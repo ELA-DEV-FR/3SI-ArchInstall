@@ -7,9 +7,10 @@ ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-pacman -S grub os-prober efibootmgr nano sudo networkmanager hyprland firefox-esr --noconfirm
+pacman -S grub os-prober efibootmgr nano sudo networkmanager hyprland firefox-esr virtualbox virtualbox-host-dkms --noconfirm
 mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
+mount ${DISK}2 /home/papa/VirtualBox VMs/
 
 echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
 echo "share UUID=$(blkid -s UUID -o value ${DISK}3) none luks" >> /etc/crypttab
@@ -27,16 +28,12 @@ groupadd share_users
 usermod -aG share_users papa
 usermod -aG share_users fiston
 
-pacman -S virtualbox virtualbox-host-dkms
 modprobe vboxdrv
 modprobe vboxnetflt
 modprobe vboxnetadp
 usermod -aG vboxusers papa
-mount ${DISK}2 /home/papa/VirtualBox VMs/
 
-mkdir -p /mnt/share
 chown root:share_users /mnt/share
 chmod 770 /mnt/share
-mount /dev/mapper/share_crypt /mnt/share
 
 echo "papa ALL=(ALL) ALL" >> /etc/sudoers
