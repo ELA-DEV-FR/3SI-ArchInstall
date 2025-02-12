@@ -7,7 +7,7 @@ ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-pacman -S grub os-prober efibootmgr nano sudo gcc firefox-esr --noconfirm
+pacman -S grub os-prober efibootmgr nano sudo  --noconfirm
 mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
 
