@@ -23,13 +23,14 @@ cat <<EOF > /etc/fstab
 /dev/mapper/vg0-share /share ext4 defaults 0 2
 UUID=$(blkid -s UUID -o value ${DISK}1) /boot/efi vfat defaults 0 2
 EOF
+
+sed -i 's/^HOOKS=(.*)$/HOOKS=(base udev autodetect keyboard keymap modconf block encrypt lvm2 filesystems fsck)/' /etc/mkinitcpio.conf
+mkinitcpio -P
+
 systemctl daemon-reload
 echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
-
-sed -i 's/^HOOKS=(.*)/HOOKS=(base udev autodetect keyboard keymap modconf block encrypt lvm2 filesystems fsck)/' /etc/mkinitcpio.conf
-mkinitcpio -P
 
 systemctl enable NetworkManager
 
