@@ -11,12 +11,10 @@ pacman -S grub os-prober efibootmgr nano sudo networkmanager hyprland firefox vi
 mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
 
-# Ajout des entrées dans /etc/crypttab
 cat <<EOF > /etc/crypttab
 lvm_crypt UUID=$(blkid -s UUID -o value ${DISK}2) none luks
 EOF
 
-# Ajout des entrées dans /etc/fstab
 cat <<EOF > /etc/fstab
 /dev/mapper/vg0-root / ext4 defaults 0 1
 /dev/mapper/vg0-home /home ext4 defaults 0 2
@@ -25,7 +23,7 @@ cat <<EOF > /etc/fstab
 /dev/mapper/vg0-share /share ext4 defaults 0 2
 UUID=$(blkid -s UUID -o value ${DISK}1) /boot/efi vfat defaults 0 2
 EOF
-
+systemctl daemon-reload
 echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -46,6 +44,7 @@ cat <<EOF > /etc/modules-load.d/virtualbox.conf
 vboxdrv
 vboxnetflt
 vboxnetadp
+dm-crypt
 EOF
 
 echo "papa ALL=(ALL) ALL" >> /etc/sudoers
