@@ -7,7 +7,7 @@ ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-pacman -S grub os-prober efibootmgr nano sudo --noconfirm
+pacman -S grub os-prober efibootmgr nano sudo networkmanager --noconfirm
 mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
 
@@ -20,5 +20,13 @@ useradd -m -s /bin/bash papa
 echo "papa:azerty123" | chpasswd
 useradd -m -s /bin/bash fiston
 echo "fiston:azerty123" | chpasswd
+groupadd share_users
+usermod -aG share_users papa
+usermod -aG share_users fiston
+systemctl enable Networkmanager
+loadkeys fr 
+chown root:share_users /mnt/share
+chmod 770 /mnt/share
+
 
 echo "papa ALL=(ALL) ALL" >> /etc/sudoers
