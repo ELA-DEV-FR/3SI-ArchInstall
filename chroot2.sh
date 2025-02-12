@@ -39,7 +39,7 @@ mkdir -p /home/papa/VirtualBox\ VMs/
 chown -R papa:papa /home/papa/VirtualBox\ VMs/
 chmod 777 /home/papa/VirtualBox\ VMs/
 
-# Ajout des modules VirtualBox
+
 cat <<EOF > /etc/modules-load.d/virtualbox.conf
 vboxdrv
 vboxnetflt
