@@ -40,33 +40,36 @@ vgcreate vg0 ${DISK}2
 lvcreate -L 20G -n root vg0
 lvcreate -L 10G -n home vg0
 lvcreate -L 10G -n var vg0
+lvcreate -L 10G -n vm vg0 
+lvcreate -L 5G -n share vg0 
 
 ###############
 # CHIFFREMENT #
 ###############
 echo -e "${CYAN} Mise en place du chiffrement LUKS pour les volumes logiques...${RESET}"
-echo -n "azerty123" | cryptsetup luksFormat --type luks2 /dev/vg0/root
-echo -n "azerty123" | cryptsetup luksFormat --type luks2 /dev/vg0/home
-echo -n "azerty123" | cryptsetup luksFormat --type luks2 /dev/vg0/var
+echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}2
+echo -n "azerty123" | cryptsetup open ${DISK}2 lvm_crypt
 
-echo -n "azerty123" | cryptsetup open /dev/vg0/root root_crypt
-echo -n "azerty123" | cryptsetup open /dev/vg0/home home_crypt
-echo -n "azerty123" | cryptsetup open /dev/vg0/var var_crypt
+mkfs.ext4 /dev/vg0/root
+mkfs.ext4 /dev/vg0/home
+mkfs.ext4 /dev/vg0/var
+mkfs.ext4 /dev/vg0/vm
+mkfs.ext4 /dev/vg0/share
 
-mkfs.ext4 /dev/mapper/root_crypt
-mkfs.ext4 /dev/mapper/home_crypt
-mkfs.ext4 /dev/mapper/var_crypt
 
 ###########
 # MONTAGE #
 ###########
 echo -e "${CYAN} Montage des partitions...${RESET}"
-mount /dev/mapper/root_crypt /mnt
+mount /dev/vg0/root /mnt
 mkdir -p /mnt/boot/efi
 mkdir -p /mnt/home
 mkdir -p /mnt/var
+mkdir -p /mnt/vm
 mount ${DISK}1 /mnt/boot/efi
-mount /dev/mapper/home_crypt /mnt/home
-mount /dev/mapper/var_crypt /mnt/var
+mount /dev/vg0/home /mnt/home
+mount /dev/vg0/var /mnt/var
+mount /dev/vg0/vm /mnt/vm
+mount /dev/vg0/share /mnt/share
 
 echo -e "${GREEN} Partitionnement terminé !${RESET}"
