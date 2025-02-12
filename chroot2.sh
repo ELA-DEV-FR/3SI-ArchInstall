@@ -12,7 +12,7 @@ mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
 
 echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
-echo "UUID=$(blkid -s UUID -o value ${DISK}2) /home/papa/VirtualBox\ VMs/ ext4 defaults 0 2" >> /mnt/etc/fstab
+echo "UUID=$(blkid -s UUID -o value ${DISK}2) /home/papa/VirtualBox\ VMs/ ext4 defaults 0 2" >> /etc/fstab
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 
