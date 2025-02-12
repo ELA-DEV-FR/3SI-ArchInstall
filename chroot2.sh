@@ -7,7 +7,7 @@ ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-pacman -S grub os-prober efibootmgr nano sudo networkmanager gcc firefox-esr  --noconfirm
+pacman -S grub os-prober efibootmgr nano sudo gcc firefox-esr --noconfirm
 mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
 
@@ -18,14 +18,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 useradd -m -s /bin/bash papa
 echo "papa:azerty123" | chpasswd
-
-echo "papa ALL=(ALL) ALL" >> /etc/sudoers
-
 useradd -m -s /bin/bash fiston
 echo "fiston:azerty123" | chpasswd
-groupadd share_users
-usermod -aG share_users papa
-usermod -aG share_users fiston
 
-systemctl enable NetworkManager
-loadkeys fr 
+echo "papa ALL=(ALL) ALL" >> /etc/sudoers
