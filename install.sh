@@ -57,5 +57,5 @@ mkinitcpio -P
 # ENDING #
 ##########
 echo -e "${GREEN}Installation terminée avec succès ! Redémarrage en cours...${RESET}"
-umount -R /mnt
-reboot
+#umount -R /mnt
+#reboot

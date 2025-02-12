@@ -10,10 +10,9 @@ echo -e "${CYAN}-----------------------------------------------${RESET}"
 echo -e "${GREEN}      Auto-Partitionnement Arch Linux         ${RESET}"
 echo -e "${CYAN}-----------------------------------------------${RESET}"
 
-# Variables
 DISK="/dev/sda"
 EFI_SIZE=512
-LVM_SIZE=$((60 * 1024))  
+LVM_SIZE=$((60 * 1024))
 
 ###################
 # PARTITIONNEMENT #
