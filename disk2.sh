@@ -13,7 +13,7 @@ echo -e "${CYAN}-----------------------------------------------${RESET}"
 # Variables
 DISK="/dev/sda"
 EFI_SIZE=512
-VM_SIZE=$((20 * 1024))
+VM_SIZE=$((80 * 1024))
 SHARE_SIZE=$((5 * 1024))
 OPTIONAL_SIZE=$((10 * 1024))
 
@@ -56,7 +56,5 @@ mkdir -p /mnt/boot/efi
 mkdir -p /mnt/share
 mkdir -p /mnt/data
 mount ${DISK}1 /mnt/boot/efi
-mount /dev/mapper/share_crypt /mnt/share
-mount ${DISK}2 /mnt/vm
 
 echo -e "${GREEN} Partitionnement terminé !${RESET}"
