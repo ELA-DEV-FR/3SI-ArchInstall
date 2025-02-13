@@ -26,19 +26,21 @@ mkfs.fat -F32 "${DISK}1"
 
 echo -n "$PASSWD" | cryptsetup luksFormat --type luks2 --pbkdf pbkdf2 --batch-mode "${DISK}2"
 
-echo -n "$PASSWD" | cryptsetup open "${DISK}2" lvm_crypt
+echo -n "$PASSWD" | cryptsetup open "${DISK}2" lvm_arch
 partprobe "$DISK"
 
 echo -e "${CYAN}7) Configuration LVM dans le conteneur chiffré...${RESET}"
-pvcreate /dev/mapper/lvm_crypt
-vgcreate vg0 /dev/mapper/lvm_crypt
+pvcreate /dev/mapper/lvm_arch
+vgcreate vg0 /dev/mapper/lvm_arch
 
 
 lvcreate -L 20G -n root vg0
 lvcreate -L 10G -n home vg0
 lvcreate -L 10G -n var  vg0
 lvcreate -L 10G -n vm   vg0
+lvcreate -L 10G -n luks vg0
 lvcreate -L  5G -n share vg0
+
 
 
 mkfs.ext4 /dev/vg0/root
@@ -46,6 +48,7 @@ mkfs.ext4 /dev/vg0/home
 mkfs.ext4 /dev/vg0/var
 mkfs.ext4 /dev/vg0/vm
 mkfs.ext4 /dev/vg0/share
+mkfs.ext4 /dev/vg0/luks
 
 
 mount /dev/vg0/root /mnt
