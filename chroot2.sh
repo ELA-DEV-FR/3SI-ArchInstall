@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 DISK="/dev/sda"
 
@@ -11,8 +10,11 @@ pacman -S grub os-prober efibootmgr nano sudo networkmanager hyprland firefox vi
 mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
 
+echo -e "${CYAN}Vérification de l'UUID de la partition chiffrée...${RESET}"
+CRYPT_UUID=$(blkid -s UUID -o value ${DISK}2)
+
 cat <<EOF > /etc/crypttab
-lvm_crypt UUID=$(blkid -s UUID -o value ${DISK}2) none luks
+lvm_crypt UUID=${CRYPT_UUID} none luks
 EOF
 
 cat <<EOF > /etc/fstab
@@ -29,6 +31,9 @@ mkinitcpio -P
 
 systemctl daemon-reload
 echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
+
+sed -i "s|^GRUB_CMDLINE_LINUX=\"\(.*\)\"|GRUB_CMDLINE_LINUX=\"\1 cryptdevice=UUID=${CRYPT_UUID}:lvm_crypt\"|" /etc/default/grub
+
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 
