@@ -18,6 +18,18 @@ pacman -S --noconfirm i3 i3status i3lock dmenu feh xorg-xinit xorg-server \
   xorg-xrandr xorg-xrdb ttf-dejavu compton
 
 
+useradd -m -s /bin/bash papa
+echo "papa:azerty123" | chpasswd
+
+useradd -m -s /bin/bash fiston
+echo "fiston:azerty123" | chpasswd
+
+mkdir -p "/home/papa/VirtualBox VMs/"
+chown -R papa:papa "/home/papa/VirtualBox VMs/"
+chmod 777 "/home/papa/VirtualBox VMs/"
+
+mount /dev/vg0/vm    /home/papa/VirtualBox VMs/
+
 mkdir -p /boot/efi
 mount "${DISK}1" /boot/efi
 
@@ -51,17 +63,6 @@ mkinitcpio -P
 
 
 systemctl enable NetworkManager
-
-
-useradd -m -s /bin/bash papa
-echo "papa:azerty123" | chpasswd
-
-useradd -m -s /bin/bash fiston
-echo "fiston:azerty123" | chpasswd
-
-mkdir -p "/home/papa/VirtualBox VMs/"
-chown -R papa:papa "/home/papa/VirtualBox VMs/"
-chmod 777 "/home/papa/VirtualBox VMs/"
 
 
 cat <<EOF > /etc/modules-load.d/virtualbox.conf

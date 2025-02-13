@@ -55,12 +55,10 @@ mount "${DISK}1" /mnt/boot/efi
 
 mkdir -p /mnt/home
 mkdir -p /mnt/var
-mkdir -p /mnt/vm
 mkdir -p /mnt/share
 
 mount /dev/vg0/home  /mnt/home
 mount /dev/vg0/var   /mnt/var
-mount /dev/vg0/vm    /mnt/vm
 mount /dev/vg0/share /mnt/share
 
 echo -e "${GREEN}Partitionnement & chiffrement terminés !${RESET}"
