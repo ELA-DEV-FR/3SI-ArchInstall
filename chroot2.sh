@@ -26,15 +26,16 @@ EOF
 sed -i 's/^HOOKS=(.*)$/HOOKS=(base udev autodetect keyboard keymap modconf block encrypt lvm2 filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 
-# Configuration GRUB
+
 echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
 echo "GRUB_PRELOAD_MODULES=\"part_gpt cryptodisk lvm\"" >> /etc/default/grub
 
-# Paramètre cryptdevice ESSENTIEL pour le démarrage
-sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=${CRYPT_UUID}:vg0 root=/dev/mapper/vg0-root\"|" /etc/default/grub
+sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=${CRYPT_UUID}:lvm_crypt root=/dev/mapper/vg0-root\"|" /etc/default/grub
+echo "GRUB_PRELOAD_MODULES=\"part_gpt cryptodisk luks lvm ext2\"" >> /etc/default/grub
 
-# Réinstallation de GRUB avec vérification
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
+vgchange -ay
+mkinitcpio -P
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --modules="luks2 part_gpt cryptodisk lvm" --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 
 systemctl enable NetworkManager
