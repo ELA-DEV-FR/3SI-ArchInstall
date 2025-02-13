@@ -1,39 +1,39 @@
 #!/bin/bash
 
+
 DISK="/dev/sda"
 
 ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
+# Ajouter les paquets nécessaires pour le support cryptographique
 pacman -S grub os-prober efibootmgr nano sudo networkmanager hyprland firefox virtualbox virtualbox-host-dkms cryptsetup lvm2 --noconfirm
 mkdir -p /boot/efi
 mount ${DISK}1 /boot/efi
 
+# Vérification UUID
 echo -e "${CYAN}Vérification de l'UUID de la partition chiffrée...${RESET}"
 CRYPT_UUID=$(blkid -s UUID -o value ${DISK}2)
+echo "UUID utilisé : ${CRYPT_UUID}"
 
+# Création du fichier crypttab
 cat <<EOF > /etc/crypttab
 lvm_crypt UUID=${CRYPT_UUID} none luks
 EOF
 
-cat <<EOF > /etc/fstab
-/dev/mapper/vg0-root / ext4 defaults 0 1
-/dev/mapper/vg0-home /home ext4 defaults 0 2
-/dev/mapper/vg0-var /var ext4 defaults 0 2
-/dev/mapper/vg0-vm /vm ext4 defaults 0 2
-/dev/mapper/vg0-share /share ext4 defaults 0 2
-UUID=$(blkid -s UUID -o value ${DISK}1) /boot/efi vfat defaults 0 2
-EOF
-
+# Configuration mkinitcpio avec l'ordre correct des hooks
 sed -i 's/^HOOKS=(.*)$/HOOKS=(base udev autodetect keyboard keymap modconf block encrypt lvm2 filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 
-systemctl daemon-reload
+# Configuration GRUB
 echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
+echo "GRUB_PRELOAD_MODULES=\"part_gpt cryptodisk lvm\"" >> /etc/default/grub
 
-sed -i "s|^GRUB_CMDLINE_LINUX=\"\(.*\)\"|GRUB_CMDLINE_LINUX=\"\1 cryptdevice=UUID=${CRYPT_UUID}:lvm_crypt\"|" /etc/default/grub
+# Paramètre cryptdevice ESSENTIEL pour le démarrage
+sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=${CRYPT_UUID}:vg0 root=/dev/mapper/vg0-root\"|" /etc/default/grub
 
+# Réinstallation de GRUB avec vérification
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
 

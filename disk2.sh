@@ -34,7 +34,7 @@ mkfs.fat -F32 ${DISK}1
 # CHIFFREMENT #
 ###############
 echo -e "${CYAN} Mise en place du chiffrement LUKS pour le volume physique...${RESET}"
-echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}2
+echo -n "azerty123" | cryptsetup luksFormat --type luks2 --batch-mode ${DISK}2
 echo -n "azerty123" | cryptsetup open ${DISK}2 lvm_crypt
 
 ###############
