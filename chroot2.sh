@@ -27,15 +27,22 @@ sed -i 's/^HOOKS=(.*)$/HOOKS=(base udev autodetect keyboard keymap modconf block
 mkinitcpio -P
 
 
-echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
-echo "GRUB_PRELOAD_MODULES=\"part_gpt cryptodisk lvm\"" >> /etc/default/grub
+{
+  echo "GRUB_ENABLE_CRYPTODISK=y"
+  echo "GRUB_PRELOAD_MODULES=\"part_gpt part_msdos cryptodisk luks gcry_rijndael gcry_sha256 gcry_sha512 lvm ext2\""
+  echo "GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=${CRYPT_UUID}:lvm_crypt root=/dev/mapper/vg0-root\""
+} > /etc/default/grub
 
 sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=${CRYPT_UUID}:lvm_crypt root=/dev/mapper/vg0-root\"|" /etc/default/grub
-echo "GRUB_PRELOAD_MODULES=\"part_gpt cryptodisk luks lvm ext2\"" >> /etc/default/grub
 
 vgchange -ay
 mkinitcpio -P
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --modules="luks2 part_gpt cryptodisk lvm" --recheck
+grub-install --target=x86_64-efi \
+  --efi-directory=/boot/efi \
+  --bootloader-id=GRUB \
+  --modules="luks2 part_gpt cryptodisk lvm ext2 gcry_rijndael gcry_sha256" \
+  --recheck
+  
 grub-mkconfig -o /boot/grub/grub.cfg
 
 systemctl enable NetworkManager
