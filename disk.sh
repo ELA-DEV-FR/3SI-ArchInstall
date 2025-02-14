@@ -1,86 +1,76 @@
 #!/bin/bash
 
-# Définition des couleurs
 RED="\e[31m"
 GREEN="\e[32m"
 CYAN="\e[36m"
 RESET="\e[0m"
 
 echo -e "${CYAN}-----------------------------------------------${RESET}"
-echo -e "${GREEN}      Auto-Partitionnement Arch Linux         ${RESET}"
+echo -e "${GREEN}   Auto-Partitionnement & Chiffrement Arch    ${RESET}"
 echo -e "${CYAN}-----------------------------------------------${RESET}"
 
-# Variables
-DISK="/dev/sda"
-EFI_SIZE=512
-VM_SIZE=$((20 * 1024))
-SHARE_SIZE=$((5 * 1024))
-LUKS_OPTIONAL_SIZE=$((10 * 1024))
+DISK="/dev/sda"         
+EFI_SIZE=512           
+LVM_SIZE=$((74 * 1024)) 
+PASSWD="azerty123"     
+SECOND_PASSWD="azerty123"
+parted -s "$DISK" mklabel gpt
+parted -s "$DISK" mkpart ESP fat32 1MiB "${EFI_SIZE}MiB"
+parted -s "$DISK" set 1 esp on
 
-###################
-# PARTITIONNEMENT # 
-###################
-echo -e "${CYAN} Création des partitions...${RESET}"
-parted -s $DISK mklabel gpt
-parted -s $DISK mkpart ESP fat32 1MiB ${EFI_SIZE}MiB
-parted -s $DISK set 1 esp on
-parted -s $DISK mkpart VM ext4 ${EFI_SIZE}MiB $((EFI_SIZE + VM_SIZE))MiB
-parted -s $DISK mkpart SHARE ext4 $((EFI_SIZE + VM_SIZE))MiB $((EFI_SIZE + VM_SIZE + SHARE_SIZE))MiB
-parted -s $DISK mkpart OPTIONAL_LUKS ext4 $((EFI_SIZE + VM_SIZE + SHARE_SIZE))MiB $((EFI_SIZE + VM_SIZE + SHARE_SIZE + LUKS_OPTIONAL_SIZE))MiB
-parted -s $DISK mkpart LUKS_REST ext4 $((EFI_SIZE + VM_SIZE + SHARE_SIZE + LUKS_OPTIONAL_SIZE))MiB 100%
-sleep 2
 
-##################
-# FORMATAGE + FS #
-##################
-echo -e "${CYAN} Formatage des partitions...${RESET}"
-mkfs.fat -F32 ${DISK}1
-mkfs.ext4 ${DISK}2
-mkfs.ext4 ${DISK}3
+parted -s "$DISK" mkpart LVM ext4 "${EFI_SIZE}MiB" "$((EFI_SIZE + LVM_SIZE))MiB"
 
-###############
-# CHIFFREMENT # 
-###############
-echo -e "${CYAN} Mise en place du chiffrement LUKS...${RESET}"
-echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}4
-echo -n "azerty123" | cryptsetup luksFormat --type luks2 ${DISK}5
 
-#################
-# DECHIFFREMENT # 
-#################
-echo -e "${CYAN} Déverrouillage des volumes chiffrés...${RESET}"
-# Share
-echo -n "azerty123" | cryptsetup open ${DISK}4 share_crypt
-mkfs.ext4 ${DISK}4
-mkfs.ext4 ${DISK}
-mkfs.ext4 /dev/mapper/share_crypt
+mkfs.fat -F32 "${DISK}1"
 
-# Système
-echo -n "azerty123" | cryptsetup open ${DISK}5 system_crypt
-mkfs.ext4 ${DISK}5
-pvcreate /dev/mapper/system_crypt
-vgcreate system /dev/mapper/system_crypt
-lvcreate -L 20G system -n root
-lvcreate -l 100%FREE system -n home
-modprobe dm_mod
-vgscan
-vgchange -ay
-##################
-# FORMATAGE + FS #
-##################
-mkfs.ext4 /dev/system/root
-mkfs.ext4 /dev/system/home
 
-###########
-# MONTAGE #
-###########
-echo -e "${CYAN} Montage des partitions...${RESET}"
-mount /dev/system/root /mnt
+echo -n "$PASSWD" | cryptsetup luksFormat --type luks2 --pbkdf pbkdf2 --batch-mode "${DISK}2"
+
+echo -n "$PASSWD" | cryptsetup open "${DISK}2" lvm_crypt
+partprobe "$DISK"
+
+echo -e "${CYAN}7) Configuration LVM dans le conteneur chiffré...${RESET}"
+pvcreate /dev/mapper/lvm_crypt
+vgcreate vg0 /dev/mapper/lvm_crypt
+
+
+lvcreate -L 20G -n root vg0
+lvcreate -L 10G -n home vg0
+lvcreate -L 10G -n var  vg0
+lvcreate -L 10G -n vm   vg0
+lvcreate -L  5G -n share vg0
+lvcreate -L 10G -n vault vg0
+
+cryptsetup luksFormat /dev/vg0/vault
+cryptsetup open /dev/vg0/vault vault_enc
+mkfs.ext4 /dev/mapper/vault_enc
+echo -n "$SECOND_PASSWD" | cryptsetup luksAddKey /dev/vg0/vault
+
+
+mkfs.ext4 /dev/vg0/root
+mkfs.ext4 /dev/vg0/home
+mkfs.ext4 /dev/vg0/var
+mkfs.ext4 /dev/vg0/vm
+mkfs.ext4 /dev/vg0/share
+mkfs.ext4 /dev/vg0/vault
+
+
+mount /dev/vg0/root /mnt
+
 mkdir -p /mnt/boot/efi
-mkdir -p /mnt/home
-mkdir -p /mnt/share
-mount ${DISK}1 /mnt/boot/efi
-mount /dev/system/home /mnt/home
-mount /dev/mapper/share_crypt /mnt/share
+mount "${DISK}1" /mnt/boot/efi
 
-echo -e "${GREEN} Partitionnement terminé !${RESET}"
+mkdir -p /mnt/home
+mkdir -p /mnt/var
+mkdir -p /mnt/share
+mkdir -p /var/lib/virtualbox
+
+
+mount /dev/vg0/home  /mnt/home
+mount /dev/vg0/var   /mnt/var
+mount /dev/vg0/share /mnt/share
+mount /dev/vg0/vm /var/lib/virtualbox
+
+
+echo -e "${GREEN}Partitionnement & chiffrement terminés !${RESET}"

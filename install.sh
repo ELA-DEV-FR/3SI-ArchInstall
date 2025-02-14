@@ -38,7 +38,7 @@ pacman -S cryptsetup --noconfirm
 ##############
 # BUILD DISK #
 ##############
-bash disk2.sh
+bash disk.sh
 mkdir -p /mnt/boot/efi
 mount ${DISK}1 /mnt/boot/efi
 pacstrap /mnt base linux linux-firmware lvm2 nano networkmanager hyprland
@@ -48,7 +48,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 ######################
 # CHROOT ENVIRONMENT #
 ######################
-cp chroot2.sh /mnt/root/chroot.sh
+cp chroot.sh /mnt/root/chroot.sh
 chmod +x /mnt/root/chroot.sh
 arch-chroot /mnt /root/chroot.sh
 mkinitcpio -P
