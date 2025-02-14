@@ -66,6 +66,9 @@ echo "HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encr
 echo "exec i3" > /home/papa/.xinitrc
 echo "exec i3" > /home/fiston/.xinitrc
 
+echo "startx" >> /home/papa/.bashrc
+echo "startx" >> /home/fiston/.bashrc
+
 cat <<EOF > /etc/default/grub
 GRUB_ENABLE_CRYPTODISK=y
 GRUB_PRELOAD_MODULES="luks2 part_gpt cryptodisk gcry_rijndael gcry_sha512 lvm ext2"
