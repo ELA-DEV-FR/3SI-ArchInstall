@@ -64,9 +64,13 @@ mount "${DISK}1" /mnt/boot/efi
 mkdir -p /mnt/home
 mkdir -p /mnt/var
 mkdir -p /mnt/share
+mkdir -p /var/lib/virtualbox
+
 
 mount /dev/vg0/home  /mnt/home
 mount /dev/vg0/var   /mnt/var
 mount /dev/vg0/share /mnt/share
+mount /dev/vg0/vm /var/lib/virtualbox
+
 
 echo -e "${GREEN}Partitionnement & chiffrement terminés !${RESET}"

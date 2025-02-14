@@ -45,8 +45,6 @@ echo "fiston:azerty123" | chpasswd
 
 mkdir -p /var/lib/virtualbox
 
-vgchange -ay
-
 mount /dev/vg0/vm /var/lib/virtualbox
 
 mkdir -p /boot/efi
