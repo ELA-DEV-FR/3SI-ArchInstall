@@ -24,6 +24,7 @@ pacman -S --noconfirm virtualbox-host-dkms
 pacman -S --noconfirm cryptsetup 
 pacman -S --noconfirm lvm2
 pacman -S --noconfirm i3 
+pacman -S --noconfirm terminator
 pacman -S --noconfirm i3status 
 pacman -S --noconfirm i3lock 
 pacman -S --noconfirm dmenu 
@@ -33,7 +34,7 @@ pacman -S --noconfirm xorg-server
 pacman -S --noconfirm xorg-xrandr 
 pacman -S --noconfirm xorg-xrdb 
 pacman -S --noconfirm ttf-dejavu 
-pacman -S --noconfirm compton
+pacman -S --noconfirm compto
 
 
 
@@ -54,6 +55,11 @@ CRYPT_UUID=$(blkid -s UUID -o value "${DISK}2")
 
 echo "lvm_crypt UUID=${CRYPT_UUID} none luks" > /etc/crypttab
 echo "HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt lvm2 filesystems fsck)" >> /etc/mkinitcpio.conf
+
+
+
+echo "startx" >> /home/papa/.bashrc
+echo "startx" >> /home/fiston/.bashrc
 
 cat <<EOF > /etc/default/grub
 GRUB_ENABLE_CRYPTODISK=y
