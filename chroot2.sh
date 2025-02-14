@@ -12,13 +12,11 @@ ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc
 echo "archlinux" > /etc/hostname
 
-<<<<<<< HEAD
 pacman -S --noconfirm grub os-prober efibootmgr nano sudo networkmanager \
   hyprland firefox virtualbox virtualbox-host-dkms cryptsetup lvm2
 pacman -S --noconfirm i3 i3status i3lock dmenu feh xorg-xinit xorg-server \
   xorg-xrandr xorg-xrdb ttf-dejavu compton
 
-=======
 pacman -S --noconfirm grub
 pacman -S --noconfirm os-prober
 pacman -S --noconfirm efibootmgr
@@ -41,7 +39,6 @@ pacman -S --noconfirm xorg-xrandr
 pacman -S --noconfirm xorg-xrdb 
 pacman -S --noconfirm ttf-dejavu 
 pacman -S --noconfirm compton
->>>>>>> be965cd76515deae9dd8c001f18ce53a2b368c2f
 
 useradd -m -s /bin/bash papa
 echo "papa:azerty123" | chpasswd
