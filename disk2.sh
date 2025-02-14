@@ -13,7 +13,7 @@ DISK="/dev/sda"
 EFI_SIZE=512           
 LVM_SIZE=$((74 * 1024)) 
 PASSWD="azerty123"     
-$SECOND_PASSWD="azerty123"
+SECOND_PASSWD="azerty123"
 parted -s "$DISK" mklabel gpt
 parted -s "$DISK" mkpart ESP fat32 1MiB "${EFI_SIZE}MiB"
 parted -s "$DISK" set 1 esp on
