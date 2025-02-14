@@ -30,7 +30,7 @@ echo -e "${CYAN}-----------------------------------------------${RESET}"
 # KEYBOARD #
 ############
 loadkeys fr
-pacman -Syu
+pacman -Syu --noconfirm
 pacman -S reflector --noconfirm
 reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 pacman -S cryptsetup --noconfirm
@@ -57,5 +57,5 @@ mkinitcpio -P
 # ENDING #
 ##########
 echo -e "${GREEN}Installation terminée avec succès ! Redémarrage en cours...${RESET}"
-#umount -R /mnt
-#reboot
+umount -R /mnt
+reboot
