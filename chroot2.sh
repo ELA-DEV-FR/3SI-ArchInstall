@@ -46,14 +46,12 @@ echo "papa:azerty123" | chpasswd
 useradd -m -s /bin/bash fiston
 echo "fiston:azerty123" | chpasswd
 
-mkdir -p "/home/papa/VirtualBox VMs/"
+mkdir -p "/var/lib/virtualbox"
 
 vgchange -ay
 
-mount /dev/vg0/vm /home/papa/VirtualBox\ VMs/
+mount /dev/vg0/vm /var/lib/virtualbox
 
-chown -R papa:papa "/home/papa/VirtualBox VMs/"
-chmod 777 "/home/papa/VirtualBox VMs/"
 mkdir -p /boot/efi
 mount "${DISK}1" /boot/efi
 
