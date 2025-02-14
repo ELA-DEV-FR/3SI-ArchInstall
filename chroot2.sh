@@ -41,9 +41,6 @@ pacman -S --noconfirm xorg-xrdb
 pacman -S --noconfirm ttf-dejavu 
 pacman -S --noconfirm compto
 
-echo "exec i3" > /home/papa/.xinitrc
-echo "exec i3" > /home/fiston/.xinitrc
-
 useradd -m -s /bin/bash papa
 echo "papa:azerty123" | chpasswd
 
@@ -66,6 +63,8 @@ echo "lvm_crypt UUID=${CRYPT_UUID} none luks" > /etc/crypttab
 
 echo "HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt lvm2 filesystems fsck)" >> /etc/mkinitcpio.conf
 
+echo "exec i3" > /home/papa/.xinitrc
+echo "exec i3" > /home/fiston/.xinitrc
 
 cat <<EOF > /etc/default/grub
 GRUB_ENABLE_CRYPTODISK=y
