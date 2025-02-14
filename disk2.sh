@@ -39,6 +39,12 @@ lvcreate -L 10G -n home vg0
 lvcreate -L 10G -n var  vg0
 lvcreate -L 10G -n vm   vg0
 lvcreate -L  5G -n share vg0
+lvcreate -L 10G -n vault   vg0
+
+cryptsetup luksFormat /dev/vg0/vault
+cryptsetup open /dev/vg0/vault vault_enc
+mkfs.ext4 /dev/mapper/vault_enc
+
 
 
 mkfs.ext4 /dev/vg0/root
@@ -46,6 +52,7 @@ mkfs.ext4 /dev/vg0/home
 mkfs.ext4 /dev/vg0/var
 mkfs.ext4 /dev/vg0/vm
 mkfs.ext4 /dev/vg0/share
+mkfs.ext4 /dev/vg0/vault
 
 
 mount /dev/vg0/root /mnt

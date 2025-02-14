@@ -59,7 +59,6 @@ CRYPT_UUID=$(blkid -s UUID -o value "${DISK}2")
 
 
 echo "lvm_crypt UUID=${CRYPT_UUID} none luks" > /etc/crypttab
-
 echo "HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt lvm2 filesystems fsck)" >> /etc/mkinitcpio.conf
 
 
