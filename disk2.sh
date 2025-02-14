@@ -11,8 +11,9 @@ echo -e "${CYAN}-----------------------------------------------${RESET}"
 
 DISK="/dev/sda"         
 EFI_SIZE=512           
-LVM_SIZE=$((60 * 1024)) 
+LVM_SIZE=$((80 * 1024)) 
 PASSWD="azerty123"     
+$SECOND_PASSWD ="azerty123"
 parted -s "$DISK" mklabel gpt
 parted -s "$DISK" mkpart ESP fat32 1MiB "${EFI_SIZE}MiB"
 parted -s "$DISK" set 1 esp on
@@ -44,7 +45,7 @@ lvcreate -L 10G -n vault   vg0
 cryptsetup luksFormat /dev/vg0/vault
 cryptsetup open /dev/vg0/vault vault_enc
 mkfs.ext4 /dev/mapper/vault_enc
-
+echo -n "$SECOND_PASSWD" | cryptsetup luksAddKey /dev/vg0/vault
 
 
 mkfs.ext4 /dev/vg0/root
